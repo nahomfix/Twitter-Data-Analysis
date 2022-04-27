@@ -18,6 +18,7 @@ class Clean_Tweets:
         unwanted_rows = df[df["retweet_count"] == "retweet_count"].index
         df.drop(unwanted_rows, inplace=True)
         df = df[df["polarity"] != "polarity"]
+        df.reset_index(drop=True, inplace=True)
 
         return df
 
@@ -27,6 +28,7 @@ class Clean_Tweets:
         """
 
         df = df.drop_duplicates(subset="original_text")
+        df.reset_index(drop=True, inplace=True)
 
         return df
 
@@ -66,11 +68,24 @@ class Clean_Tweets:
         """
 
         df = df.loc[df["lang"] == "en"]
+        df.reset_index(drop=True, inplace=True)
 
+        return df
+
+    def drop_null_values(self, df: pd.DataFrame) -> pd.DataFrame:
+        df.dropna(inplace=True)
+        df.reset_index(drop=True, inplace=True)
+        
         return df
 
 
 if __name__ == "__main__":
     data = pd.read_csv("./processed_tweet_data.csv")
     cleaner = Clean_Tweets(data)
-    print(cleaner.drop_duplicate(data))
+    clean_df = cleaner.drop_duplicate(data)
+    clean_df = cleaner.remove_non_english_tweets(clean_df)
+    clean_df = cleaner.convert_to_numbers(clean_df)
+    clean_df = cleaner.convert_to_datetime(clean_df)
+    clean_df = cleaner.drop_unwanted_column(clean_df)
+    # clean_df = cleaner.drop_null_values(clean_df)
+    clean_df.to_csv("./clean_tweet_data.csv", index=False)

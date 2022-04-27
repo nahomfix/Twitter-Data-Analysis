@@ -197,7 +197,12 @@ class TweetDfExtractor:
         for single_text in text:
             blob = TextBlob(single_text)
             polarity, sensitivity = blob.sentiment
-            sentiment.append((polarity, sensitivity))
+            if polarity < 0:
+                sentiment.append(0)
+            elif polarity == 0:
+                sentiment.append(-1)
+            elif polarity > 0:
+                sentiment.append(1)
 
         return sentiment
 
@@ -252,9 +257,9 @@ class TweetDfExtractor:
         hashtags = self.find_hashtags()
         mentions = self.find_mentions()
         location = self.find_location()
-        sentiment = self.find_sentiment(text)
-        boundaries = self.find_coordinates()
         clean_text = self.clean_text()
+        sentiment = self.find_sentiment(clean_text)
+        boundaries = self.find_coordinates()
 
         data = zip(
             created_at,

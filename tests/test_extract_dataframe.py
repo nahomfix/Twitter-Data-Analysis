@@ -1,6 +1,7 @@
 import os
 import sys
 import unittest
+from zipfile import ZipFile
 
 import pandas as pd
 
@@ -8,6 +9,11 @@ sys.path.append(os.path.abspath(os.path.join('../..')))
 
 
 from extract_dataframe import TweetDfExtractor, read_json
+
+with ZipFile('data/Economic_Twitter_Data.zip', 'r') as zipObj:
+    # Extract all the contents of zip file in current directory
+    zipObj.extractall('data')
+    
 
 _, tweet_list = read_json("data/Economic_Twitter_Data.json")
 

@@ -73,7 +73,7 @@ class Clean_Tweets:
         return df
 
     def drop_null_values(self, df: pd.DataFrame) -> pd.DataFrame:
-        df.dropna(inplace=True)
+        df.dropna(inplace=True, subset=["clean_text"])
         df.reset_index(drop=True, inplace=True)
         
         return df
@@ -87,5 +87,5 @@ if __name__ == "__main__":
     clean_df = cleaner.convert_to_numbers(clean_df)
     clean_df = cleaner.convert_to_datetime(clean_df)
     clean_df = cleaner.drop_unwanted_column(clean_df)
-    # clean_df = cleaner.drop_null_values(clean_df)
+    clean_df = cleaner.drop_null_values(clean_df)
     clean_df.to_csv("./clean_tweet_data.csv", index=False)
